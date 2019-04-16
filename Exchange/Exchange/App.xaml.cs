@@ -8,8 +8,6 @@ namespace Exchange
 {
     public partial class App : Application
     {
-        //TODO: Replace with *.azurewebsites.net url after deploying backend to Azure
-        public static string AzureBackendUrl = "http://localhost:5000";
         public static bool UseMockDataStore = true;
 
         public App()
@@ -17,9 +15,9 @@ namespace Exchange
             InitializeComponent();
 
             if (UseMockDataStore)
-                DependencyService.Register<MockDataStore>();
+                DependencyService.Register<MockExchangeRateService>();
             else
-                DependencyService.Register<AzureDataStore>();
+                DependencyService.Register<ExchangeRateService>();
             MainPage = new MainPage();
         }
 

@@ -1,18 +1,21 @@
-﻿using System;
+﻿using Exchange.Services;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-
+using System.Threading.Tasks;
 using Xamarin.Forms;
-
-using Exchange.Models;
-using Exchange.Services;
 
 namespace Exchange.ViewModels
 {
     public class BaseViewModel : INotifyPropertyChanged
     {
-        public IDataStore<Item> DataStore => DependencyService.Get<IDataStore<Item>>() ?? new MockDataStore();
+        public virtual Task Init()
+        {
+            return Task.FromResult(0);
+        }
+
+        protected IExchangeService ExchangeService => DependencyService.Get<IExchangeService>();
 
         bool isBusy = false;
         public bool IsBusy

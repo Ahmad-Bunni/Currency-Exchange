@@ -6,7 +6,7 @@ namespace Exchange.Models
 {
     public enum MenuItemType
     {
-        Browse,
+        Rates,
         About
     }
     public class HomeMenuItem

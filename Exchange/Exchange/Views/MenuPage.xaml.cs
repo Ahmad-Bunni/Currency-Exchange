@@ -8,8 +8,6 @@ using Xamarin.Forms.Xaml;
 
 namespace Exchange.Views
 {
-    // Learn more about making custom code visible in the Xamarin.Forms previewer
-    // by visiting https://aka.ms/xamarinforms-previewer
     [DesignTimeVisible(true)]
     public partial class MenuPage : ContentPage
     {
@@ -21,7 +19,7 @@ namespace Exchange.Views
 
             menuItems = new List<HomeMenuItem>
             {
-                new HomeMenuItem {Id = MenuItemType.Browse, Title="Browse" },
+                new HomeMenuItem {Id = MenuItemType.Rates, Title="Rates" },
                 new HomeMenuItem {Id = MenuItemType.About, Title="About" }
             };
 

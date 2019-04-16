@@ -8,8 +8,6 @@ using Xamarin.Forms.Xaml;
 
 namespace Exchange.Views
 {
-    // Learn more about making custom code visible in the Xamarin.Forms previewer
-    // by visiting https://aka.ms/xamarinforms-previewer
     [DesignTimeVisible(true)]
     public partial class MainPage : MasterDetailPage
     {
@@ -20,7 +18,7 @@ namespace Exchange.Views
 
             MasterBehavior = MasterBehavior.Popover;
 
-            MenuPages.Add((int)MenuItemType.Browse, (NavigationPage)Detail);
+            MenuPages.Add((int)MenuItemType.Rates, (NavigationPage)Detail);
         }
 
         public async Task NavigateFromMenu(int id)
@@ -29,8 +27,8 @@ namespace Exchange.Views
             {
                 switch (id)
                 {
-                    case (int)MenuItemType.Browse:
-                        MenuPages.Add(id, new NavigationPage(new ItemsPage()));
+                    case (int)MenuItemType.Rates:
+                        MenuPages.Add(id, new NavigationPage(new RatesPage()));
                         break;
                     case (int)MenuItemType.About:
                         MenuPages.Add(id, new NavigationPage(new AboutPage()));
