@@ -1,21 +1,22 @@
-﻿using Exchange.Services;
+﻿using Acr.UserDialogs;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace Exchange.ViewModels
 {
-    public class BaseViewModel : INotifyPropertyChanged
+    public class BasePageViewModel : INotifyPropertyChanged
     {
+        protected bool IsConnectd => Connectivity.NetworkAccess == NetworkAccess.Internet;
+        protected IUserDialogs Dialogs => DependencyService.Get<IUserDialogs>();
         public virtual Task Init()
         {
             return Task.FromResult(0);
         }
-
-        protected IExchangeService ExchangeService => DependencyService.Get<IExchangeService>();
 
         bool isBusy = false;
         public bool IsBusy

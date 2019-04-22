@@ -1,27 +1,116 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Exchange.Views.RatesPage"
-             Title="{Binding Title}">
+<views:BasePage
+    x:Class="Exchange.Views.RatesPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:Exchange.Views"
+    xmlns:vm="clr-namespace:Exchange.ViewModels"
+    Title="{Binding Title}"
+    x:TypeArguments="vm:RatesViewModel">
 
-
-    <ContentPage.ToolbarItems>
-        <ToolbarItem Text="View" Command="{Binding NavigateChild}"/>
-    </ContentPage.ToolbarItems>
+    <!--<ContentPage.ToolbarItems>
+        <ToolbarItem Command="{Binding NavigateChild}" Text="View" />
+    </ContentPage.ToolbarItems>-->
 
     <ContentPage.Content>
         <StackLayout>
-            <ListView x:Name="CurrenciesListView"
-                  ItemsSource="{Binding Currencies}">
+            <Grid Padding="8" BackgroundColor="WhiteSmoke">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="20" />
+                    <RowDefinition Height="40" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.5*" />
+                    <ColumnDefinition Width="0.1*" />
+                    <ColumnDefinition Width="0.4*" />
+                </Grid.ColumnDefinitions>
+                <Label
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    FontAttributes="Italic"
+                    Text="Amount" />
+                <Entry
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    HeightRequest="40"
+                    Keyboard="Numeric"
+                    Text="{Binding BaseAmount}"
+                    VerticalOptions="End" />
+                <Label
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    FontAttributes="Bold"
+                    FontSize="Small"
+                    Text="{Binding BaseCurrency}"
+                    VerticalOptions="Center" />
+                <Label
+                    Grid.Row="0"
+                    Grid.Column="2"
+                    FontAttributes="Italic"
+                    HorizontalOptions="End"
+                    Text="Last Updated" />
+                <Label
+                    Grid.Row="1"
+                    Grid.Column="2"
+                    FontAttributes="Italic"
+                    FontSize="Small"
+                    HorizontalOptions="End"
+                    Text="{Binding LastUpdate}"
+                    VerticalOptions="Center" />
+            </Grid>
+            <ListView
+                x:Name="CurrenciesListView"
+                BackgroundColor="White"
+                CachingStrategy="RecycleElementAndDataTemplate"
+                IsPullToRefreshEnabled="True"
+                IsRefreshing="{Binding IsBusy}"
+                ItemsSource="{Binding Currencies}"
+                RefreshCommand="{Binding RefreshCurrencies}"
+                RowHeight="50"
+                SelectionMode="None"
+                SeparatorColor="{StaticResource Accent}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        
                         <ViewCell>
-                            <Label Text="{Binding Name}" VerticalOptions="Center" Margin="8"/>
+                            <Grid Padding="8">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="0.2*" />
+                                    <ColumnDefinition Width="0.4*" />
+                                    <ColumnDefinition Width="0.2*" />
+                                    <ColumnDefinition Width="0.3*" />
+
+                                </Grid.ColumnDefinitions>
+                                <Image
+                                    HeightRequest="10"
+                                    Source="{Binding Logo}"
+                                    WidthRequest="10" />
+                                <Frame
+                                    Grid.Column="1"
+                                    Padding="0"
+                                    BorderColor="Red">
+                                    <Label
+                                        HorizontalTextAlignment="Center"
+                                        Text="{Binding Amount}"
+                                        VerticalTextAlignment="Center" />
+                                </Frame>
+                                <Button
+                                    Grid.Column="2"
+                                    BackgroundColor="Red"
+                                    Command="{Binding BindingContext.SetBaseCurrency, Source={x:Reference CurrenciesListView}}"
+                                    CommandParameter="{Binding Abbreviation}"
+                                    FontSize="Micro"
+                                    IsVisible="{Binding IsBase, Converter={StaticResource BoolInverter}}"
+                                    Text="Base"
+                                    TextColor="White"
+                                    VerticalOptions="Center" />
+                            </Grid>
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
         </StackLayout>
     </ContentPage.Content>
-</ContentPage>
+</views:BasePage>

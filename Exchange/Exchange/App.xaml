@@ -1,20 +1,28 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<Application xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Exchange.App">
+<Application
+    x:Class="Exchange.App"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:Common.Converters;assembly=Common">
 
     <Application.Resources>
         <ResourceDictionary>
-            <!--Global Styles-->
+            <!--  Global Styles  -->
             <Color x:Key="NavigationPrimary">#E80000</Color>
             <Style TargetType="NavigationPage">
                 <Setter Property="BarBackgroundColor" Value="{StaticResource NavigationPrimary}" />
                 <Setter Property="BarTextColor" Value="White" />
             </Style>
 
-            <Color x:Key="MenuTextColor">#FF00</Color>
             <Color x:Key="Accent">#FF00</Color>
+
+            <!--  Static Images  -->
             <FileImageSource x:Key="LogoImage">logo.png</FileImageSource>
+
+            <!--  Converter  -->
+            <converters:InvertBoolConverter x:Key="BoolInverter" />
+
+
         </ResourceDictionary>
     </Application.Resources>
 

@@ -1,23 +1,29 @@
-﻿using System;
-using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
-using Exchange.Services;
+﻿using Xamarin.Forms;
 using Exchange.Views;
+using Acr.UserDialogs;
+using Domain.Interface;
+using Domain.Services;
 
 namespace Exchange
 {
     public partial class App : Application
     {
-        public static bool UseMockDataStore = true;
+        public static bool UseMockDataStore = false;
 
         public App()
         {
             InitializeComponent();
 
             if (UseMockDataStore)
-                DependencyService.Register<MockExchangeRateService>();
+            {
+
+            }
             else
-                DependencyService.Register<ExchangeRateService>();
+            {
+                DependencyService.Register<ICurrencyHttpService, CurrencyHttpService>();
+                DependencyService.Register<IExchangeService, ExchangeService>();
+            }
+
             MainPage = new MainPage();
         }
 

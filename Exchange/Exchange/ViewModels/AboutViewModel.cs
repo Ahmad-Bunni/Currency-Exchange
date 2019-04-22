@@ -5,7 +5,7 @@ using Xamarin.Forms;
 
 namespace Exchange.ViewModels
 {
-    public class AboutViewModel : BaseViewModel
+    public class AboutViewModel : BasePageViewModel
     {
         public AboutViewModel()
         {
