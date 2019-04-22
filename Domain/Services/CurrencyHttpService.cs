@@ -8,20 +8,19 @@ namespace Domain.Services
 {
     public class CurrencyHttpService : ICurrencyHttpService
     {
-        private readonly ICurrencyHttpService _ICurrencyHttpService;
+        private readonly ICurrencyHttpService _currencyHttpService;
         public CurrencyHttpService()
         {
-            _ICurrencyHttpService = RestService.For<ICurrencyHttpService>("https://api.exchangeratesapi.io/latest");
+            _currencyHttpService = RestService.For<ICurrencyHttpService>("https://api.exchangeratesapi.io/latest");
         }
         public async Task<Currencies> GetAsync([AliasAs("base")] string baseCurrency)
         {
             try
             {
-                return await _ICurrencyHttpService.GetAsync(baseCurrency);
+                return await _currencyHttpService.GetAsync(baseCurrency);
             }
             catch (Exception)
             {
-
                 throw;
             }
         }

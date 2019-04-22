@@ -6,7 +6,7 @@
     xmlns:views="clr-namespace:Exchange.Views"
     xmlns:vm="clr-namespace:Exchange.ViewModels"
     Title="{Binding Title}"
-    x:TypeArguments="vm:RatesViewModel">
+    x:TypeArguments="vm:RatesPageViewModel">
 
     <!--<ContentPage.ToolbarItems>
         <ToolbarItem Command="{Binding NavigateChild}" Text="View" />

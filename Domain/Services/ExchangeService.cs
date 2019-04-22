@@ -9,7 +9,11 @@ namespace Domain.Services
 {
     public class ExchangeService : IExchangeService
     {
-        private readonly ICurrencyHttpService _currencyHttpService = DependencyService.Get<ICurrencyHttpService>();
+        private readonly ICurrencyHttpService _currencyHttpService;
+        public ExchangeService(ICurrencyHttpService currencyHttpService)
+        {
+            _currencyHttpService = currencyHttpService;
+        }
         public async Task<IEnumerable<Currency>> GetCurrenciesList(string baseCurrency)
         {
             try

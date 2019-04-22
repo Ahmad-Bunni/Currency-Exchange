@@ -11,14 +11,16 @@ using Xamarin.Forms;
 
 namespace Exchange.ViewModels
 {
-    public class RatesViewModel : BasePageViewModel
+    public class RatesPageViewModel : BasePageViewModel
     {
-        private IExchangeService ExchangeService => DependencyService.Get<IExchangeService>();
+        private readonly IExchangeService _exchangeService;
         public ICommand NavigateChild { get; }
         public ICommand SetBaseCurrency { get; }
         public ICommand RefreshCurrencies { get; }
-        public RatesViewModel()
+        public RatesPageViewModel(IExchangeService exchangeService)
         {
+            _exchangeService = exchangeService;
+
             SetBaseCurrency = new Command(async (selectedCurrency) =>
             {
                 try
@@ -134,8 +136,6 @@ namespace Exchange.ViewModels
                     BaseCurrency = "EUR";
                     await UpdateCurrencies();
                 }
-
-
             }
             catch (Exception)
             {
@@ -143,9 +143,7 @@ namespace Exchange.ViewModels
             }
             finally
             {
-
                 IsBusy = false;
-
             }
 
         }
@@ -168,14 +166,17 @@ namespace Exchange.ViewModels
         {
             if (IsConnectd)
             {
-                var currencies = await ExchangeService.GetCurrenciesList(BaseCurrency);
+                var currencies = await _exchangeService.GetCurrenciesList(BaseCurrency);
                 _currencies = currencies.ToList();
                 UpdateAmounts();
                 LastUpdate = DateTimeOffset.UtcNow.ToString("MMM, dd, yyyy HH:mm");
             }
             else
             {
-
+                if (await Dialogs.ConfirmAsync("You are currently offline. Please connect to the internet and try again.", "Offline", "Retry", "Cancel"))
+                {
+                    await UpdateCurrencies();
+                };
             }
         }
     }

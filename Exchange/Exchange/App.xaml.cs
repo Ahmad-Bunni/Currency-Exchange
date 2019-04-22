@@ -1,8 +1,6 @@
 ﻿using Xamarin.Forms;
 using Exchange.Views;
-using Acr.UserDialogs;
-using Domain.Interface;
-using Domain.Services;
+using Exchange.Startup;
 
 namespace Exchange
 {
@@ -10,19 +8,11 @@ namespace Exchange
     {
         public static bool UseMockDataStore = false;
 
-        public App()
+        public App(AppSetup setup)
         {
             InitializeComponent();
 
-            if (UseMockDataStore)
-            {
-
-            }
-            else
-            {
-                DependencyService.Register<ICurrencyHttpService, CurrencyHttpService>();
-                DependencyService.Register<IExchangeService, ExchangeService>();
-            }
+            AppContainer.Container = setup.CreateContainer();
 
             MainPage = new MainPage();
         }

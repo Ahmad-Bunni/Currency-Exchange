@@ -1,18 +1,27 @@
 ﻿using Acr.UserDialogs;
+using Autofac;
+using Exchange.Startup;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
-using Xamarin.Forms;
 
 namespace Exchange.ViewModels
 {
     public class BasePageViewModel : INotifyPropertyChanged
     {
         protected bool IsConnectd => Connectivity.NetworkAccess == NetworkAccess.Internet;
-        protected IUserDialogs Dialogs => DependencyService.Get<IUserDialogs>();
+        protected IUserDialogs Dialogs;
+
+        public BasePageViewModel()
+        {
+            using (var scope = AppContainer.Container.BeginLifetimeScope())
+            {
+                Dialogs = AppContainer.Container.Resolve<IUserDialogs>();
+            }
+        }
         public virtual Task Init()
         {
             return Task.FromResult(0);
@@ -22,14 +31,28 @@ namespace Exchange.ViewModels
         public bool IsBusy
         {
             get { return isBusy; }
-            set { SetProperty(ref isBusy, value); }
+            set
+            {
+                if (value)
+                {
+                    Dialogs.ShowLoading("Loading...");
+                }
+                else
+                {
+                    Dialogs.HideLoading();
+                }
+                SetProperty(ref isBusy, value);
+            }
         }
 
         string title = string.Empty;
         public string Title
         {
             get { return title; }
-            set { SetProperty(ref title, value); }
+            set
+            {
+                SetProperty(ref title, value);
+            }
         }
 
         protected bool SetProperty<T>(ref T backingStore, T value,
