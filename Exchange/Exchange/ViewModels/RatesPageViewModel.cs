@@ -74,16 +74,16 @@ namespace Exchange.ViewModels
             }
         }
 
-        private double _baseAmount { get; set; } = 0.0;
-        public double BaseAmount
+        private string _baseAmount { get; set; } = "0";
+        public string BaseAmount
         {
             get { return _baseAmount; }
             set
             {
                 if (_baseAmount != value)
                 {
-                    if (value > 100000)
-                        value = 100000;
+                    if (!string.IsNullOrWhiteSpace(value) && Convert.ToDouble(value) > 100000)
+                        value = "100000";
 
                     _baseAmount = value;
                     OnPropertyChanged(nameof(BaseAmount));
@@ -150,10 +150,12 @@ namespace Exchange.ViewModels
 
         private void UpdateAmounts()
         {
+            double currentAmount = string.IsNullOrWhiteSpace(BaseAmount) ? 0.0 : Convert.ToDouble(BaseAmount);
+
             List<Currency> updatedCurrencies = _currencies.Select(x => new Currency
             {
                 Abbreviation = x.Abbreviation,
-                Amount = (x.Rate * BaseAmount).ToString("N4"),
+                Amount = (x.Rate * currentAmount).ToString("N4"),
                 Rate = x.Rate,
                 IsBase = x.IsBase,
                 Logo = x.Logo
