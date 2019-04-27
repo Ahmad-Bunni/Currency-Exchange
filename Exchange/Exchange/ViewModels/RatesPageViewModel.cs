@@ -171,7 +171,7 @@ namespace Exchange.ViewModels
                 var currencies = await _exchangeService.GetCurrenciesList(BaseCurrency);
                 _currencies = currencies.ToList();
                 UpdateAmounts();
-                LastUpdate = DateTimeOffset.UtcNow.ToString("MMM, dd, yyyy HH:mm");
+                LastUpdate = DateTime.Now.ToString("MMM, dd, yyyy HH:mm");
             }
             else
             {
