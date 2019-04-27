@@ -11,10 +11,7 @@ namespace Exchange.Views
 
         public BasePage()
         {
-            using (var scope = AppContainer.Container.BeginLifetimeScope())
-            {
-                ViewModel = AppContainer.Container.Resolve<T>();
-            }
+            ViewModel = AppContainer.Container.Resolve<T>();
             BindingContext = ViewModel;
         }
 

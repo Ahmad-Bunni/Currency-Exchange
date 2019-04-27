@@ -17,10 +17,9 @@ namespace Exchange.ViewModels
 
         public BasePageViewModel()
         {
-            using (var scope = AppContainer.Container.BeginLifetimeScope())
-            {
-                Dialogs = AppContainer.Container.Resolve<IUserDialogs>();
-            }
+
+            Dialogs = AppContainer.Container.Resolve<IUserDialogs>();
+
         }
         public virtual Task Init()
         {
