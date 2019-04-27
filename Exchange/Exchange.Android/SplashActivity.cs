@@ -28,7 +28,7 @@ namespace Exchange.Droid
         // Simulates background work that happens behind the splash screen
         async void SimulateStartup()
         {
-            await Task.Delay(2000);
+
             StartActivity(new Intent(Application.Context, typeof(MainActivity)));
         }
     }
