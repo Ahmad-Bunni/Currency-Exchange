@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Prism.Core" Version="7.1.0.431" />
     <PackageReference Include="Xamarin.Forms.Maps" Version="3.6.0.344457" />
   </ItemGroup>
 

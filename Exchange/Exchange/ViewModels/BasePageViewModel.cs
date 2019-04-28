@@ -1,29 +1,21 @@
 ﻿using Acr.UserDialogs;
-using Autofac;
-using Exchange.Startup;
+using Prism.Mvvm;
+using Prism.Navigation;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 
 namespace Exchange.ViewModels
 {
-    public class BasePageViewModel : INotifyPropertyChanged
+    public class BasePageViewModel : BindableBase, INavigationAware
     {
         protected bool IsConnectd => Connectivity.NetworkAccess == NetworkAccess.Internet;
         protected IUserDialogs Dialogs;
-
-        public BasePageViewModel()
+        protected INavigationService NavigationService;
+        public BasePageViewModel(IUserDialogs userDialogs, INavigationService navigationService)
         {
-
-            Dialogs = AppContainer.Container.Resolve<IUserDialogs>();
-
-        }
-        public virtual Task Init()
-        {
-            return Task.FromResult(0);
+            Dialogs = userDialogs;
+            NavigationService = navigationService;
         }
 
         bool isBusy = false;
@@ -33,14 +25,12 @@ namespace Exchange.ViewModels
             set
             {
                 if (value)
-                {
-                    Dialogs.ShowLoading("Loading...");
-                }
+                    Dialogs.ShowLoading("Loading");
                 else
-                {
                     Dialogs.HideLoading();
-                }
-                SetProperty(ref isBusy, value);
+
+                SetProperty(ref isBusy, value, () => RaisePropertyChanged(nameof(IsBusy)));
+
             }
         }
 
@@ -54,29 +44,19 @@ namespace Exchange.ViewModels
             }
         }
 
-        protected bool SetProperty<T>(ref T backingStore, T value,
-            [CallerMemberName]string propertyName = "",
-            Action onChanged = null)
+        public virtual async void OnNavigatedFrom(INavigationParameters parameters)
         {
-            if (EqualityComparer<T>.Default.Equals(backingStore, value))
-                return false;
-
-            backingStore = value;
-            onChanged?.Invoke();
-            OnPropertyChanged(propertyName);
-            return true;
+            await Task.FromResult(0);
         }
 
-        #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        public virtual async void OnNavigatedTo(INavigationParameters parameters)
         {
-            var changed = PropertyChanged;
-            if (changed == null)
-                return;
-
-            changed.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            await Task.FromResult(0);
         }
-        #endregion
+
+        public virtual async void OnNavigatingTo(INavigationParameters parameters)
+        {
+            await Task.FromResult(0);
+        }
     }
 }

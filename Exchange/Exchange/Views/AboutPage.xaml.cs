@@ -13,7 +13,6 @@ namespace Exchange.Views
         public AboutPage()
         {
             InitializeComponent();
-            BindingContext = new AboutViewModel();
         }
     }
 }

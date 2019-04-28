@@ -1,18 +1,24 @@
-﻿using System;
-using System.Windows.Input;
-
-using Xamarin.Forms;
+﻿using Acr.UserDialogs;
+using Common.Events;
+using Prism.Events;
+using Prism.Navigation;
 
 namespace Exchange.ViewModels
 {
     public class AboutViewModel : BasePageViewModel
     {
-        public AboutViewModel()
+        private readonly IEventAggregator _ea;
+        public AboutViewModel(IUserDialogs userDialogs, INavigationService navigationService, IEventAggregator eventAggregator)
+         : base(userDialogs, navigationService)
         {
-            Title = "About";
+            _ea = eventAggregator;
 
         }
 
-        public ICommand OpenWebCommand { get; }
+        public override void OnNavigatedTo(INavigationParameters parameters)
+        {
+            base.OnNavigatedTo(parameters);
+            _ea.GetEvent<PersistNavigationEvent>().Publish(false);
+        }
     }
 }

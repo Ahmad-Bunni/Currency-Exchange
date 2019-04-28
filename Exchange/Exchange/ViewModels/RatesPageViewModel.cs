@@ -1,64 +1,31 @@
-﻿using Domain.Interface;
+﻿using Acr.UserDialogs;
+using Common.Events;
+using Domain.Interface;
 using Domain.Model;
-using Exchange.Views;
+using Prism.Commands;
+using Prism.Events;
+using Prism.Navigation;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Input;
-using Xamarin.Forms;
 
 namespace Exchange.ViewModels
 {
     public class RatesPageViewModel : BasePageViewModel
     {
         private readonly IExchangeService _exchangeService;
-        public ICommand NavigateChild { get; }
-        public ICommand SetBaseCurrency { get; }
-        public ICommand RefreshCurrencies { get; }
-        public RatesPageViewModel(IExchangeService exchangeService)
+        public DelegateCommand NavigateChild { get; }
+        public DelegateCommand<string> RefreshCurrenciesCommand { get; }
+        private readonly IEventAggregator _ea;
+        public RatesPageViewModel(IExchangeService exchangeService, IUserDialogs userDialogs, INavigationService navigationService, IEventAggregator eventAggregator)
+            : base(userDialogs, navigationService)
         {
             _exchangeService = exchangeService;
+            _ea = eventAggregator;
 
-            SetBaseCurrency = new Command(async (selectedCurrency) =>
-            {
-                try
-                {
-                    IsBusy = true;
-                    BaseCurrency = selectedCurrency as string;
-                    await UpdateCurrencies();
-                }
-                catch (Exception)
-                {
-                    throw;
-                }
-                finally
-                {
-                    IsBusy = false;
-                }
-
-            });
-
-            RefreshCurrencies = new Command(async () =>
-            {
-                try
-                {
-                    IsBusy = true;
-                    await UpdateCurrencies();
-
-                }
-                catch (Exception)
-                {
-                    throw;
-                }
-                finally
-                {
-                    IsBusy = false;
-
-                }
-
-            });
+            RefreshCurrenciesCommand = new DelegateCommand<string>(async (string param) => await RefreshCurrencies(param));
         }
 
         private List<Currency> _currencies { get; set; }
@@ -70,7 +37,7 @@ namespace Exchange.ViewModels
             {
                 if (_currenciesCollection != value)
                     _currenciesCollection = value;
-                OnPropertyChanged(nameof(Currencies));
+                RaisePropertyChanged(nameof(Currencies));
             }
         }
 
@@ -86,7 +53,7 @@ namespace Exchange.ViewModels
                         value = "100000";
 
                     _baseAmount = value;
-                    OnPropertyChanged(nameof(BaseAmount));
+                    RaisePropertyChanged(nameof(BaseAmount));
                     UpdateAmounts();
                 }
             }
@@ -102,7 +69,7 @@ namespace Exchange.ViewModels
                 {
                     _baseCurrency = value;
 
-                    OnPropertyChanged(nameof(BaseCurrency));
+                    RaisePropertyChanged(nameof(BaseCurrency));
                 }
 
             }
@@ -117,37 +84,22 @@ namespace Exchange.ViewModels
                 if (_lastUpdate != value)
                 {
                     _lastUpdate = value;
-                    OnPropertyChanged(nameof(LastUpdate));
+                    RaisePropertyChanged(nameof(LastUpdate));
                 }
             }
         }
 
-
-        public async override Task Init()
+        //update currencies / base amount if present
+        private async Task RefreshCurrencies(string baseCurrency)
         {
-            await base.Init();
+            if (!string.IsNullOrWhiteSpace(baseCurrency))
+                BaseCurrency = baseCurrency;
 
-            try
-            {
-                IsBusy = true;
-
-                if (Currencies == null)
-                {
-                    BaseCurrency = "EUR";
-                    await UpdateCurrencies();
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-            finally
-            {
-                IsBusy = false;
-            }
+            await UpdateCurrencies();
 
         }
 
+        //re-calculate amounts and update in memory
         private void UpdateAmounts()
         {
             double currentAmount = string.IsNullOrWhiteSpace(BaseAmount) ? 0.0 : Convert.ToDouble(BaseAmount);
@@ -164,22 +116,47 @@ namespace Exchange.ViewModels
             Currencies = new ObservableCollection<Currency>(updatedCurrencies);
         }
 
+        //update through api
         private async Task UpdateCurrencies()
         {
-            if (IsConnectd)
+            try
             {
-                var currencies = await _exchangeService.GetCurrenciesList(BaseCurrency);
-                _currencies = currencies.ToList();
-                UpdateAmounts();
-                LastUpdate = DateTime.Now.ToString("MMM, dd, yyyy HH:mm");
-            }
-            else
-            {
-                if (await Dialogs.ConfirmAsync("You are currently offline. Please connect to the internet and try again.", "Offline", "Retry", "Cancel"))
+                IsBusy = true;
+
+                if (IsConnectd)
                 {
-                    await UpdateCurrencies();
-                };
+                    var currencies = await _exchangeService.GetCurrenciesList(BaseCurrency);
+                    _currencies = currencies.ToList();
+                    UpdateAmounts();
+                    LastUpdate = DateTime.Now.ToString("MMM, dd, yyyy HH:mm");
+                }
+                else
+                {
+                    if (await Dialogs.ConfirmAsync("You are currently offline. Please connect to the internet and try again.", "Offline", "Retry", "Cancel"))
+                    {
+                        await UpdateCurrencies();
+                    };
+                }
             }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
+        }
+
+        public override async void OnNavigatedTo(INavigationParameters parameters)
+        {
+            base.OnNavigatedTo(parameters);
+            await UpdateCurrencies();
+
+            // close navigation event
+            _ea.GetEvent<PersistNavigationEvent>().Publish(false);
         }
     }
 }

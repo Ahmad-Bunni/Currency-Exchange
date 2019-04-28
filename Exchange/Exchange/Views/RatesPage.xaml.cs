@@ -1,23 +1,14 @@
-﻿using Exchange.ViewModels;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using Xamarin.Forms;
 
 namespace Exchange.Views
 {
     [DesignTimeVisible(true)]
-    public partial class RatesPage : BasePage<RatesPageViewModel>
+    public partial class RatesPage : ContentPage
     {
         public RatesPage()
         {
             InitializeComponent();
         }
-
-        protected async override void OnAppearing()
-        {
-            base.OnAppearing();
-
-            await ViewModel.Init();
-        }
-
     }
 }

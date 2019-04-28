@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<MasterDetailPage
+    x:Class="Exchange.Views.MasterPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    <MasterDetailPage.Master>
+        <ContentPage Title="Menu">
+            <StackLayout Padding="20">
+                <Button
+                    Command="{Binding NavigateCommand}"
+                    CommandParameter="NavigationPage/RatesPage"
+                    Text="Rates" />
+                <Button
+                    Command="{Binding NavigateCommand}"
+                    CommandParameter="NavigationPage/AboutPage"
+                    Text="About" />
+            </StackLayout>
+        </ContentPage>
+    </MasterDetailPage.Master>
+</MasterDetailPage>

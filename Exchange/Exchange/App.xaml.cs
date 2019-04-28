@@ -1,35 +1,35 @@
-﻿using Xamarin.Forms;
+﻿using Acr.UserDialogs;
+using Domain.Interface;
+using Domain.Services;
+using Exchange.ViewModels;
 using Exchange.Views;
-using Exchange.Startup;
+using Prism.Autofac;
+using Prism.Ioc;
+using System;
+using Xamarin.Forms;
 
 namespace Exchange
 {
-    public partial class App : Application
+    public partial class App : PrismApplication
     {
         public static bool UseMockDataStore = false;
 
-        public App(AppSetup setup)
+        protected override async void OnInitialized()
         {
             InitializeComponent();
 
-            AppContainer.Container = setup.CreateContainer();
-
-            MainPage = new MainPage();
+            await NavigationService.NavigateAsync(new Uri($"/{nameof(MasterPage)}/{nameof(NavigationPage)}/{nameof(RatesPage)}", UriKind.Absolute));
         }
 
-        protected override void OnStart()
+        protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            // Handle when your app starts
-        }
-
-        protected override void OnSleep()
-        {
-            // Handle when your app sleeps
-        }
-
-        protected override void OnResume()
-        {
-            // Handle when your app resumes
+            containerRegistry.RegisterForNavigation<NavigationPage>();
+            containerRegistry.RegisterForNavigation<MasterPage, MasterPageViewModel>();
+            containerRegistry.RegisterForNavigation<RatesPage, RatesPageViewModel>();
+            containerRegistry.RegisterForNavigation<AboutPage, AboutViewModel>();
+            containerRegistry.RegisterSingleton<ICurrencyHttpService, CurrencyHttpService>();
+            containerRegistry.RegisterSingleton<IExchangeService, ExchangeService>();
+            containerRegistry.RegisterInstance(UserDialogs.Instance);
         }
     }
 }

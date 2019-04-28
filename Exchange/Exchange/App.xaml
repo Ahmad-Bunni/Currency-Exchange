@@ -1,9 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<Application
+<prism:PrismApplication
     x:Class="Exchange.App"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:converters="clr-namespace:Common.Converters;assembly=Common">
+    xmlns:converters="clr-namespace:Common.Converters;assembly=Common"
+    xmlns:prism="clr-namespace:Prism.Autofac;assembly=Prism.Autofac.Forms">
 
     <Application.Resources>
         <ResourceDictionary>
@@ -26,4 +27,4 @@
         </ResourceDictionary>
     </Application.Resources>
 
-</Application>
+</prism:PrismApplication>
