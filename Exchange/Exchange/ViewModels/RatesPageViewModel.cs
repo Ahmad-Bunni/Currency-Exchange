@@ -62,7 +62,7 @@ namespace Exchange.ViewModels
         private string _baseCurrency { get; set; }
         public string BaseCurrency
         {
-            get { return _baseCurrency; }
+            get { return _baseCurrency ?? "EUR"; }
             set
             {
                 if (_baseCurrency != value)
@@ -111,7 +111,7 @@ namespace Exchange.ViewModels
                 Rate = x.Rate,
                 IsBase = x.IsBase,
                 Logo = x.Logo
-            }).ToList();
+            }).OrderByDescending(x=>x.IsBase).ToList();
 
             Currencies = new ObservableCollection<Currency>(updatedCurrencies);
         }
